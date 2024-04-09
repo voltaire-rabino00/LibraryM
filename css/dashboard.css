@@ -1,0 +1,45 @@
+.card-header {
+  padding: 1.5rem;
+}
+.table-header tr th {
+  background-color: rgb(157, 157, 238);
+}
+  
+  
+  
+  /* Style for the sidebar */
+  .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #343a40; 
+    padding-top: 3.5rem; 
+  }
+
+  
+  .sidebar a {
+    padding: 10px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+  }
+
+ 
+  .sidebar a:hover {
+    background-color: #454d55;
+  }
+
+
+  .content {
+    margin-left: 250px; 
+    padding: 20px;
+  }
+
+  #books {
+    display: none;
+  }
+
+  

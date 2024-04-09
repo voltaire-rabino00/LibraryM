@@ -1,0 +1,7 @@
+/* Css style for books */
+.card-header {
+  padding: 1.5rem;
+}
+.table-header tr th {
+  background-color: rgb(157, 157, 238);
+}
