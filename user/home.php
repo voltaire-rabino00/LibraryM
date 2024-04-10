@@ -23,7 +23,7 @@ session_start(); // Start the session
       <ul>
         <li><a href="#home">Home</a></li>
         <li><a href="/libraryM/user/books.php">Books</a></li>
-        <li><a href="#contact">Logout</a></li>
+        <li><a href="logout.php">Logout</a></li>
       </ul>
     </nav>
   </section>

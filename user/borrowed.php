@@ -2,74 +2,67 @@
 include("config.php");
 session_start(); // Start the session
 
-// Initialize $borrowId variable from session if it exists
-if (isset($_SESSION["id"])) {
-    $borrowId = $_SESSION["id"];
-} else {
-    // Handle the case where the user ID is not set in the session
-    // Redirect the user or display an error message
-    exit("User ID not found.");
-}
+// Fetch borrowed books data from the database
+$sql = "SELECT id, book_name, user_name, date FROM borrow";
+$result = mysqli_query($conn, $sql);
 
-function borrowBook($conn, $bookId, $borrowId) {
-    // Insert a new row into the borrow table
-    $borrowedTime = date('Y-m-d H:i:s');
-    $sql = "INSERT INTO borrow (bid, id, date) 
-            VALUES ('$bookId', '$borrowId', '$borrowedTime')";
-    if (mysqli_query($conn, $sql)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// Borrow button form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
-    $bookId = $_POST["bid"]; // Get the book ID from the form
-    if (borrowBook($conn, $bookId, $borrowId)) {
-        echo "Book borrowed successfully.";
-    } else {
-        echo "Failed to borrow the book.";
-    }
-}
-
-// Display borrowed books
-$res = mysqli_query($conn, "SELECT * FROM borrow WHERE id = '$borrowId'");
+// Check if query executed successfully
+if ($result) {
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Borrowed</title>
+  <title>Borrowed Books</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="/libraryM/css/books.css">
+  <style>
+    /* Add custom styles here */
+  </style>
 </head>
 <body>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Book ID</th>
-            <th>Book Name</th>
-            <th>Borrowed Time</th>
-        </tr>
+<div class="container">
+  <h1 class="text-center mt-5 mb-4">Borrowed Books</h1>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Book Name</th>
+        <th>User Name</th>
+        <th>Borrowed Time</th>
+        <th>Action</th>
+      </tr>
     </thead>
     <tbody>
-        <?php
-        // Fetch and display borrowed books
-        while ($row = mysqli_fetch_assoc($res)) {
-            echo "<tr>";
-            echo "<td>{$row['book_id']}</td>";
-            echo "<td>{$row['book_name']}</td>"; // Display the book name
-            echo "<td>{$row['borrowed_time']}</td>";
-            echo "</tr>";
+      <?php
+        // Display each borrowed book as a table row
+        while ($row = mysqli_fetch_assoc($result)) {
+      ?>
+      <tr>
+        <td><?php echo $row['id']; ?></td>
+        <td><?php echo $row['book_name']; ?></td>
+        <td><?php echo $row['user_name']; ?></td>
+        <td><?php echo $row['date']; ?></td>
+        <td>
+                <form action="code.php" method="post">
+                  <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure to return thi book?')">Return</button>
+                </form>
+              </td>
+      </tr>
+      <?php
         }
-        ?>
+      ?>
     </tbody>
-</table>
-
+  </table>
+</div>
 </body>
 </html>
+
+<?php
+} else {
+    // Display an error message if the query fails
+    echo "Failed to fetch borrowed books: " . mysqli_error($conn);
+}
+?>

@@ -129,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
   $bookId = $_SESSION["bid"];
 
   // Fetch the book name from the database based on the book ID
-  $bookNameQuery = "SELECT * FROM books WHERE bid = '$bookId'";
+  $bookNameQuery = "SELECT * FROM books";
   $bookNameResult = mysqli_query($conn, $bookNameQuery);
 
   if ($bookNameResult === false) {
@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
           $bookName = $row['name'];
 
           // Fetch the user name from the user database based on the user ID
-          $userNameQuery = "SELECT * FROM user WHERE id ='$borrowerId'";
+          $userNameQuery = "SELECT * FROM user";
           $userNameResult = mysqli_query($conn, $userNameQuery);
 
           // Check if the user name is found
@@ -159,9 +159,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
 
               // Execute the query
               if (mysqli_query($conn, $sql)) {
-                  // Redirect to the borrowed page
-                  header("Location: borrowed.php");
-                  exit; // Stop further execution
+                  echo '<script>
+                    alert("Successfully Borrowed");
+                    window.location.href="borrowed.php"
+                  </script>';
+                //   header("Location: borrowed.php");
+                //   exit; // Stop further execution
               } else {
                   echo "Failed to borrow the book: " . mysqli_error($conn);
               }
@@ -174,6 +177,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
   }
 }
 
+
+// Return Books
+// Delete Function
+if(isset($_POST['id'])) {
+    $id = $_POST['id'];
+    
+    // Perform the deletion query
+    $sql = "DELETE FROM borrow WHERE id = $id";
+    if(mysqli_query($conn, $sql)) {
+        echo '<script>
+            alert("Successfuly Returned");
+            window.location.href = "borrowed.php";
+        </script>';
+    } else {
+        echo "Error deleting user: " . mysqli_error($conn);
+    }
+  }
 
 ?>
 

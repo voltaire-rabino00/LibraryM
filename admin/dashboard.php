@@ -22,7 +22,7 @@ session_start(); // Start the session
   <div class="sidebar">
     <a href="#dashboard"  class="sidebar-link">Dashboard</a>
     <a href="#books" class="sidebar-link">Books</a>
-    <a href="#">Logout</a>
+    <a href="logout.php">Logout</a>
   </div>
 
   <!-- Dashboard content -->
