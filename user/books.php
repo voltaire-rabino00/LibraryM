@@ -59,7 +59,11 @@ session_start(); // Start the session
                         <td><?= $row['quantity'] ?></td>
                         <td><?= $row['department'] ?></td>
                         <td><img src="<?= $row['image_path'] ?>" alt="Book Image" style="max-width: 100px; height: auto;"></td>
-                        <td><button class="btn btn-success">Borrow</button></td> <!-- Borrow button -->
+                        <td>
+                            <form action="code.php" method="post">
+                            <button type="submit" name="borrow" class="btn btn-success">Borrow</button>
+                            </form>
+                        </td> <!-- Borrow button -->
                     </tr>
                 <?php
                 }

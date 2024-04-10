@@ -83,32 +83,98 @@ if(isset($_POST['Submit'])){
 
 // Define paths for admin and user directories
 
-$adminDir = 'admin/uploads/';
-$userDir = 'user/uploads/';
+$adminDir = '/xampp/htdocs/LibraryM/admin/uploads/';
+$userDir = '/xampp/htdocs/LibraryM/user/uploads/';
 
-// Get a list of all files in the admin directory
-$files = scandir($adminDir);
+// Check if the admin directory exists
+if (is_dir($adminDir)) {
+    // Get a list of all files in the admin directory
+    $files = scandir($adminDir);
 
-// Loop through each file in the admin directory
-foreach ($files as $file) {
-    // Skip . and .. directories
-    if ($file == '.' || $file == '..') {
-        continue;
-    }
-    
-    // Build full paths for the source and destination files
-    $sourceFile = $adminDir . $file;
-    $destinationFile = $userDir . $file;
+    // Ensure scandir was successful
+    if ($files !== false) {
+        // Loop through each file in the admin directory
+        foreach ($files as $file) {
+            // Skip . and .. directories
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+            
+            // Build full paths for the source and destination files
+            $sourceFile = $adminDir . $file;
+            $destinationFile = $userDir . $file;
 
-    // Move the file from the admin directory to the user directory
-    if (rename($sourceFile, $destinationFile)) {
-        echo "File $file moved successfully.<br>";
+            // Move the file from the admin directory to the user directory
+            if (rename($sourceFile, $destinationFile)) {
+                echo "File $file moved successfully.<br>";
+            } else {
+                echo "Error moving file $file.<br>";
+            }
+        }
     } else {
-        echo "Error moving file $file.<br>";
-        echo "Source: $sourceFile<br>";
-        echo "Destination: $destinationFile<br>";
+        echo "Failed to list files in the admin directory.";
     }
+} else {
+    echo "Admin directory not found.";
 }
-?>
+
+
+
+// Check if the form is submitted and the "borrow" button is clicked
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["borrow"])) {
+  // Get the borrower ID from the session
+  $borrowerId = $_SESSION["id"];
+
+  // Get the book ID from the session
+  $bookId = $_SESSION["bid"];
+
+  // Fetch the book name from the database based on the book ID
+  $bookNameQuery = "SELECT * FROM books WHERE bid = '$bookId'";
+  $bookNameResult = mysqli_query($conn, $bookNameQuery);
+
+  if ($bookNameResult === false) {
+      // Handle query execution error
+      echo "Error executing query: " . mysqli_error($conn);
+  } else {
+      if (mysqli_num_rows($bookNameResult) > 0) {
+          // Fetch the result set and access array offsets
+          $row = mysqli_fetch_assoc($bookNameResult);
+          $bookName = $row['name'];
+
+          // Fetch the user name from the user database based on the user ID
+          $userNameQuery = "SELECT * FROM user WHERE id ='$borrowerId'";
+          $userNameResult = mysqli_query($conn, $userNameQuery);
+
+          // Check if the user name is found
+          if ($userNameResult && mysqli_num_rows($userNameResult) > 0) {
+              $row = mysqli_fetch_assoc($userNameResult);
+              $userName = $row['name'];
+
+              // Get the current date and time
+              $borrowedTime = date('Y-m-d H:i:s');
+
+              // Insert borrowed book information into the database
+              $sql = "INSERT INTO borrow (id, book_name, user_name, date) 
+                      VALUES ('$borrowerId', '$bookName', '$userName', '$borrowedTime')";
+
+              // Execute the query
+              if (mysqli_query($conn, $sql)) {
+                  // Redirect to the borrowed page
+                  header("Location: borrowed.php");
+                  exit; // Stop further execution
+              } else {
+                  echo "Failed to borrow the book: " . mysqli_error($conn);
+              }
+          } else {
+              echo "User not found.";
+          }
+      } else {
+          echo "Book not found.";
+      }
+  }
+}
+
 
 ?>
+
+
