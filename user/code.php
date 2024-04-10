@@ -82,8 +82,9 @@ if(isset($_POST['Submit'])){
 
 
 // Define paths for admin and user directories
-$adminDir = '/path/to/admin/uploads/';
-$userDir = '/path/to/user/uploads/';
+
+$adminDir = 'admin/uploads/';
+$userDir = 'user/uploads/';
 
 // Get a list of all files in the admin directory
 $files = scandir($adminDir);
@@ -104,6 +105,8 @@ foreach ($files as $file) {
         echo "File $file moved successfully.<br>";
     } else {
         echo "Error moving file $file.<br>";
+        echo "Source: $sourceFile<br>";
+        echo "Destination: $destinationFile<br>";
     }
 }
 ?>

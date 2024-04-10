@@ -58,7 +58,7 @@ session_start(); // Start the session
                         <td><?= $row['status'] ?></td>
                         <td><?= $row['quantity'] ?></td>
                         <td><?= $row['department'] ?></td>
-                        <td><img src="<?= $row['image_path'] ?>" alt="Book Image" style="max-width: 100px; height: auto";></td>
+                        <td><img src="<?= $row['image_path'] ?>" alt="Book Image" style="max-width: 100px; height: auto;"></td>
                         <td><button class="btn btn-success">Borrow</button></td> <!-- Borrow button -->
                     </tr>
                 <?php
