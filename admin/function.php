@@ -25,13 +25,13 @@ if(isset($_POST['Submit'])){
       
       if ($result) {
         $_SESSION['registration_success'] = true;
-        header("location: index.php");
+        header("location: admin.php");
     }
     }
     else{
       echo '<script>
         alert("Password Do not match");
-        window.location.href = "index.php";
+        window.location.href = "admin.php";
       </script>';
     }
   }
